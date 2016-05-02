@@ -1,0 +1,36 @@
+#!/bin/bash
+#=============================================================================================
+# Script Backup Databases PostgreSQL - Martin Alexanders Lopez Mamani
+# =============================================================================================
+
+# Procedimiento de Copia de Seguridad de Servidor de Postgres
+
+
+DATABASE=musicdb
+
+FILE=$DATABASE-`date +%F-%H%M%S`.sql
+
+export PGPASSWORD=Martin5108508
+
+## backup command
+pg_dump -h localhost -U postgres $DATABASE > ~/dbbackup/$FILE
+
+## compressing the backup file
+gzip  ~/dbbackup/$FILE
+
+## Removing export
+unset PGPASSWORD
+
+
+FILESIZE=$( du -sh ~/dbbackup/$FILE.gz )
+## Using condition
+
+if [ ! -f  ~/dbbackup/$FILE.gz ]; then
+    echo "$FILE.gz File not found! postgres database name $DATABASE  backup is failed";
+else
+    echo "$FILE.gz File found, Actual tamaño de compression es $FILESIZE postgres database name $DATABASE backup is completado";
+fi
+
+
+
+
